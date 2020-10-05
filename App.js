@@ -1,52 +1,31 @@
-import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  Text,
-  StatusBar,
-  View,
-} from 'react-native';
+import React from 'react';
+import {StatusBar} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import MoviesListScreen from './MoviesListScreen';
+import Movie from './Movie';
 
-const App = () => {
-  const [sWFilms, setSwFilms] = useState([]);
+const Stack = createStackNavigator();
 
-  useEffect(() => {
-    async function init() {
-      const result = await fetch('https://swapi.dev/api/films/').then((res) =>
-        res.json(),
-      );
-      console.log({result});
-      setSwFilms(result.results);
-    }
-
-    init();
-  }, []);
-
+function App() {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.safeAreaView}>
-        <ScrollView>
-          {sWFilms.map((film) => (
-            <View style={{height: 60}}>
-              <Text>
-                {film.title} ({film.episode_id})
-              </Text>
-            </View>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
+
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="MoviesList"
+          screenOptions={{headerTitleAlign: 'center'}}>
+          <Stack.Screen
+            name="MoviesList"
+            component={MoviesListScreen}
+            options={{title: 'Movies'}}
+          />
+          <Stack.Screen name="Movie" component={Movie} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
-};
-
-const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-    paddingHorizontal: 22,
-    paddingTop: 20,
-  },
-});
+}
 
 export default App;
